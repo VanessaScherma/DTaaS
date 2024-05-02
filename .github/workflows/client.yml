@@ -49,6 +49,7 @@ jobs:
         with:
           files: client/coverage/clover.xml
           flags: client-unit-integration-tests
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   get_version:
     name: Get version
