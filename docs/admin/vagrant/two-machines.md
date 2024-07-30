@@ -18,7 +18,7 @@ you can create shell scripts to install the same on server2.
 
 ## Create Base Vagrant Box
 
-Create [**dtaas** Vagrant box](./base-box.md).
+Create [**dtaas** Vagrant box](base-box.md).
 You would have created an SSH key pair - _vagrant_ and _vagrant.pub_.
 The _vagrant_ is the private SSH key and is needed for the next steps.
 Copy _vagrant_ SSH private key into the current directory (`deploy/vagrant/two-machine`).
@@ -27,12 +27,12 @@ machines created for two-machine deployment.
 
 ## Target Installation Setup
 
-The goal is to use this [**dtaas** vagrant box](./base-box.md)
+The goal is to use this [**dtaas** vagrant box](base-box.md)
 to install the DTaaS software on server1 and
 the default platform services on server2. Both the servers
 are vagrant machines.
 
-![DTaaS vagrant box package use](./two-machine-use-legend.png)
+![DTaaS vagrant box package use](two-machine-use-legend.png)
 
 There are many unused software packages/docker containers within
 the dtaas base box.
@@ -41,7 +41,7 @@ The used packages/docker containers are highlighed in blue and red color.
 A graphical illustration of a successful installation can be
 seen here.
 
-![Two vagrant machine](./two-machine.png)
+![Two vagrant machine](two-machine.png)
 
 In this case, both the vagrant boxes are spawed on one server using
 two vagrant configuration files, namely _boxes.json_ and _Vagrantfile_.
@@ -56,7 +56,7 @@ two vagrant configuration files, namely _boxes.json_ and _Vagrantfile_.
 
 ## Configure Server Settings
 
-**NOTE**: A dummy **foo.com** and **services.foo.com**  URLs
+:clipboard: A dummy **foo.com** and **services.foo.com**  URLs
 has been used for illustration.
 Please change these to your unique website URLs.
 
@@ -106,18 +106,20 @@ you can see the following services active within server2 (_services.foo.com_).
 Execute the following commands from terminal
 
 ```bash
-vagrant up --provision dtaas
-vagrant ssh dtaas
-wget https://raw.githubusercontent.com/INTO-CPS-Association/DTaaS/feature/distributed-demo/deploy/vagrant/route.sh
+vagrant up
+vagrant ssh
+```
+
+Set a cronjob inside the vagrant virtual
+machine to remote the conflicting default route.
+Download the [route script](route.sh) and run
+the following command.
+
+```bash
 sudo bash route.sh
 ```
 
-If you only want to test the application and are
-not setting up a production instance, you can
-follow the instructions of [single script install](../trial.md).
-
-If you are not in a hurry and would rather have a production instance,
-follow the instructions of [regular server installation](../host.md)
+Please follow the instructions of [regular server installation](../host.md)
 setup to complete the installation.
 
 ## References
