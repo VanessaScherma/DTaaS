@@ -9,6 +9,7 @@ import AssetBoard from 'components/asset/AssetBoard';
 import { GitlabInstance } from 'util/gitlab';
 import { getAuthority } from 'util/envUtil';
 import tabs from './DigitalTwinTabData';
+import CreateTab from './CreateTab';
 
 const createDTTab = (
   subfolders: Asset[],
@@ -16,18 +17,24 @@ const createDTTab = (
   gitlabInstance: GitlabInstance,
 ): TabData[] =>
   tabs
-    .filter((tab) => tab.label === 'Manage' || tab.label === 'Execute')
+    .filter((tab) => tab.label === 'Manage' || tab.label === 'Execute' || tab.label === 'Create')
     .map((tab) => ({
       label: tab.label,
       body: (
         <>
           <Typography variant="body1">{tab.body}</Typography>
+          {tab.label === 'Manage' || tab.label === 'Execute' ? ( 
           <AssetBoard
             tab={tab.label}
             subfolders={subfolders}
             gitlabInstance={gitlabInstance}
             error={error}
-          />
+          />)
+          : (
+        <CreateTab />
+          )
+        }
+          {/* create tab */}
         </>
       ),
     }));
