@@ -13,7 +13,6 @@ import CreateTab from './CreateTab';
 
 const createDTTab = (
   error: string | null,
-  gitlabInstance: GitlabInstance,
 ): TabData[] =>
   tabs
     .filter((tab) => tab.label === 'Manage' || tab.label === 'Execute' || tab.label === 'Create')
@@ -25,7 +24,6 @@ const createDTTab = (
           {tab.label === 'Manage' || tab.label === 'Execute' ? ( 
           <AssetBoard
             tab={tab.label}
-            gitlabInstance={gitlabInstance}
             error={error}
           />)
           : (
@@ -72,7 +70,7 @@ function DTContent() {
 
   return (
     <Layout>
-      <TabComponent assetType={createDTTab(error, gitlabInstance)} scope={[]} />
+      <TabComponent assetType={createDTTab(error)} scope={[]} />
     </Layout>
   );
 }
