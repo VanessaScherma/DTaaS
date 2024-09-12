@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
-import { Box, Button, Grid, Tabs, Tab } from '@mui/material';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+import { Box, Button, Grid, Tabs, Tab, CircularProgress } from '@mui/material';
 // import Editor from '@monaco-editor/react'; // Monaco Editor
 import 'react-resizable/css/styles.css'; // Import resizable styles
+import { useSelector } from 'react-redux';
+import { selectDigitalTwinByName } from 'store/digitalTwin.slice';
+import DigitalTwin from 'util/gitlabDigitalTwin';
 import EditorTab from './create/EditorTab';
 import PreviewTab from './create/PreviewTab';
 import Sidebar from './create/Sidebar';
 
+const fetchFilesNames = async (digitalTwin: DigitalTwin) => {
+  await digitalTwin.gitlabInstance.init();
+  await digitalTwin.getDescriptionFiles();
+}
+
 function CreateTab() {
   // const [editorValue, setEditorValue] = useState('# Write some markdown here...');
   const [activeTab, setActiveTab] = useState(0); // Tab state for editor and preview
+  const [loading, setLoading] = useState(true);
+  const digitalTwin = useSelector(selectDigitalTwinByName('mass-spring-damper'));
+
+  useEffect(() => { 
+    fetchFilesNames(digitalTwin);
+    setLoading(false);
+  }, [digitalTwin]);
 
   // Function to handle tab change
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -23,10 +39,19 @@ function CreateTab() {
     // console.log('Cancel action triggered');
   };
 
+  // Check if digitalTwin is available before rendering the content
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
       {/* Resizable Left Side Panel */}
-      <Sidebar />
+      <Sidebar/>
 
       {/* Right Side Content */}
       <Grid container direction="column" sx={{ flexGrow: 1, padding: 2 }}>
@@ -45,7 +70,7 @@ function CreateTab() {
         {/* Action Buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: 2 }}>
           <Button onClick={handleCancel} variant="outlined" color="secondary">Cancel</Button>
-        <Button onClick={handleSave} variant="outlined" sx={{ marginRight: 1 }}>Save</Button>
+          <Button onClick={handleSave} variant="outlined" sx={{ marginRight: 1 }}>Save</Button>
         </Box>
       </Grid>
     </Box>

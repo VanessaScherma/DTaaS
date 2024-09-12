@@ -1,17 +1,14 @@
 import * as React from 'react';
-import { useEffect, useState, Dispatch, SetStateAction } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { AlertColor, CardActions, Grid } from '@mui/material';
 import styled from '@emotion/styled';
-import DigitalTwin, { formatName } from 'util/gitlabDigitalTwin';
-import { GitlabInstance } from 'util/gitlab';
-import { getAuthority } from 'util/envUtil';
+import { formatName } from 'util/gitlabDigitalTwin';
 import CustomSnackbar from 'route/digitaltwins/Snackbar';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
-  setDigitalTwin,
   selectDigitalTwinByName,
 } from 'store/digitalTwin.slice';
 import LogDialog from 'route/digitaltwins/LogDialog';
@@ -139,23 +136,7 @@ function AssetCard({ asset, buttons }: AssetCardProps) {
 function AssetCardManage({ asset, onDelete }: AssetCardManageProps) {
   const [showDetailsLog, setShowDetailsLog] = useState(false);
   const [showDeleteLog, setShowDeleteLog] = useState(false);
-  const dispatch = useDispatch();
   const digitalTwin = useSelector(selectDigitalTwinByName(asset.name));
-
-  useEffect(() => {
-    const gitlabInstance = new GitlabInstance(
-      sessionStorage.getItem('username') || '',
-      getAuthority(),
-      sessionStorage.getItem('access_token') || '',
-    );
-    gitlabInstance.init();
-    dispatch(
-      setDigitalTwin({
-        assetName: asset.name,
-        digitalTwin: new DigitalTwin(asset.name, gitlabInstance),
-      }),
-    );
-  }, []);
 
   return (
     digitalTwin && (
@@ -190,28 +171,10 @@ function AssetCardManage({ asset, onDelete }: AssetCardManageProps) {
 function AssetCardExecute({ asset }: AssetCardProps) {
   useState<AlertColor>('success');
   const [showLog, setShowLog] = useState(false);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const gitlabInstance = new GitlabInstance(
-      sessionStorage.getItem('username') || '',
-      getAuthority(),
-      sessionStorage.getItem('access_token') || '',
-    );
-    gitlabInstance.init();
-    dispatch(
-      setDigitalTwin({
-        assetName: asset.name,
-        digitalTwin: new DigitalTwin(asset.name, gitlabInstance),
-      }),
-    );
-  }, [asset.name, dispatch]);
-
   const digitalTwin = useSelector(selectDigitalTwinByName(asset.name));
 
   return (
-    digitalTwin && (
+    digitalTwin.descriptionFiles && (
       <>
         <AssetCard
           asset={asset}

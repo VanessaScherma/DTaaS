@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 import { GitlabInstance } from './gitlab';
 
 const RUNNER_TAG = 'linux';
@@ -141,12 +143,12 @@ class DigitalTwin {
     return `Error deleting ${this.DTName} digital twin: no project id`;
   }
 
-  async getDescriptionFiles(projectId: number) {
+  async getDescriptionFiles() {
+    console.log("GitlabInstance dentro la funzione", this.gitlabInstance);
     try {
-      const response = await this.gitlabInstance.api.Repositories.allRepositoryTrees(projectId, {
-        ref: 'main',
+      const response = await this.gitlabInstance.api.Repositories.allRepositoryTrees(this.gitlabInstance.projectId!, {
         path: 'digital_twins/mass-spring-damper',
-        recursive: true, // Non fare una ricerca ricorsiva
+        recursive: false, // Non fare una ricerca ricorsiva
       });
 
       // Filtra i file che non finiscono con .json
