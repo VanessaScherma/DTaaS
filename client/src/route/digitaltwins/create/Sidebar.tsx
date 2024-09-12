@@ -1,39 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, SetStateAction, Dispatch } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
 import { TreeItem } from '@mui/x-tree-view/TreeItem';
+import { useSelector } from 'react-redux';
+import { selectDigitalTwinByName } from 'store/digitalTwin.slice';
+import DigitalTwin from 'util/gitlabDigitalTwin';
 
 interface DataItem {
   id: string;
   name: string;
 }
 
+const fetchData = async (digitalTwin: DigitalTwin, setDescriptionData: Dispatch<SetStateAction<DataItem[]>>, setConfigData: Dispatch<SetStateAction<DataItem[]>>) => {
+  const configResponse = [
+    { id: '1', name: 'Digital Twin' },
+    { id: '2', name: 'Asset1' },
+    { id: '3', name: 'Asset2' },
+    { id: '4', name: 'Service1' },
+    { id: '5', name: 'Service2' },
+  ];
+  setConfigData(configResponse);
+
+  await digitalTwin.getDescriptionFiles(digitalTwin.gitlabInstance.projectId!);
+  setDescriptionData(digitalTwin.descriptionFiles.map((name) => ({ id: name, name })));
+};
+
 const Sidebar = () => {
   const [descriptionData, setDescriptionData] = useState<DataItem[]>([]);
   const [configData, setConfigData] = useState<DataItem[]>([]);
 
-  // Simulate API call to fetch data
-  useEffect(() => {
-    // Mock data for Description and Config
-    const fetchData = async () => {
-      const descriptionResponse = [
-        { id: '1', name: 'Digital Twin' },
-        { id: '2', name: 'Asset1' },
-        { id: '3', name: 'Asset2' },
-      ];
-      const configResponse = [
-        { id: '1', name: 'Digital Twin' },
-        { id: '2', name: 'Asset1' },
-        { id: '3', name: 'Asset2' },
-        { id: '4', name: 'Service1' },
-        { id: '5', name: 'Service2' },
-      ];
-      
-      setDescriptionData(descriptionResponse);
-      setConfigData(configResponse);
-    };
+  const digitalTwin = useSelector(selectDigitalTwinByName('mass-spring-damper'));
 
-    fetchData();
+  useEffect(() => {
+    // Funzione per caricare i dati dei file
+    fetchData(digitalTwin, setDescriptionData, setConfigData);
   }, []);
 
   return (

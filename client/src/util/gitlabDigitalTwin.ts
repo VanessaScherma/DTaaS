@@ -26,6 +26,8 @@ class DigitalTwin {
 
   public pipelineCompleted: boolean = false;
 
+  public descriptionFiles: string[] = [];
+
   constructor(DTName: string, gitlabInstance: GitlabInstance) {
     this.DTName = DTName;
     this.gitlabInstance = gitlabInstance;
@@ -137,6 +139,28 @@ class DigitalTwin {
       }
     }
     return `Error deleting ${this.DTName} digital twin: no project id`;
+  }
+
+  async getDescriptionFiles(projectId: number) {
+    try {
+      const response = await this.gitlabInstance.api.Repositories.allRepositoryTrees(projectId, {
+        ref: 'main',
+        path: 'digital_twins/mass-spring-damper',
+        recursive: true, // Non fare una ricerca ricorsiva
+      });
+
+      // Filtra i file che non finiscono con .json
+      const filteredFiles = response
+        .filter((item: { type: string; name: string; }) => item.type === 'blob' && !item.name.endsWith('.json'))
+        .map((file: { name: string; }) => file.name);
+
+      // Ordina i file mettendo il file del DT per primo
+      const sortedFiles = [formatName(this.DTName), ...filteredFiles.filter(name => name !== this.DTName)];
+
+      this.descriptionFiles = sortedFiles;
+    } catch (error) {
+      this.descriptionFiles = [];
+    }
   }
 }
 
