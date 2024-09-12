@@ -41,20 +41,3 @@ export const mockAuthState: mockAuthStateType = {
   isLoading: false,
   user: mockUser,
 };
-
-jest.mock('util/envUtil', () => ({
-  ...jest.requireActual('util/envUtil'),
-  useURLforDT: () => mockURLforDT,
-  useURLforLIB: () => mockURLforLIB,
-  getClientID: () => mockClientID,
-  getAuthority: () => mockAuthority,
-  getRedirectURI: () => mockRedirectURI,
-  getLogoutRedirectURI: () => mockLogoutRedirectURI,
-  getGitLabScopes: () => mockGitLabScopes,
-  getURLforWorkbench: () => mockURLforWorkbench,
-  getWorkbenchLinkValues: () => [
-    { key: '1', link: 'link1' },
-    { key: '2', link: 'link2' },
-    { key: '3', link: 'link3' },
-  ],
-}));
